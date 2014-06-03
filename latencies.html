@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: relative;
+  width: 960px;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+  fill-opacity: .9;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
+<h1>Latency Numbers Every Programmer Should Know (ns)</h1>
+<div>Using the data from <a href="https://gist.githubusercontent.com/jboner/2841832/raw/0a6e14cda5d6cc8b2eb304a895b0f2ba9b9b75c8/latency.txt">here</a> </div>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+
+var margin = {top: 20, right: 20, bottom: 90, left: 200},
+    width = 960 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+var x = d3.scale.log().range([0, width]);
+
+var y = d3.scale.ordinal()
+    .rangeBands([0, height]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .tickFormat(x.tickFormat(1,",d"))
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var lUrl = "https://gist.githubusercontent.com/jboner/2841832/raw/"
+  +"0a6e14cda5d6cc8b2eb304a895b0f2ba9b9b75c8/latency.txt";
+//var lUrl = "latencies.tsv";
+
+d3.text(lUrl, function(error, data) {
+  var latencies=[] 
+  data.split("\n").forEach(function(d) {
+    var m = d.match(/(.{36})\s+([0-9,.]+)\s+ns/);
+    if(m){
+      var name=m[1].trim();
+      var lat=parseFloat(m[2].replace(/\,/g,''));
+      latencies.push({name: name, latency:lat});
+    }
+  });
+
+  var xMin = d3.min(latencies, function(d) { return d.latency; });
+  var xMax = d3.max(latencies, function(d) { return d.latency; });
+
+  x.domain([0.1, xMax]);
+  y.domain(latencies.map(function(d) { return d.name; }));
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("transform", "rotate(-65)");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+  var barHeight = y.rangeBand();
+  svg.selectAll(".bar")
+      .data(latencies)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("transform", function(d,i) { return "translate(0,"+ i * barHeight + ")";})
+      .attr("width", function(d) { return x(d.latency);})
+      .attr("height", function(d) { return barHeight; });
+});
+
+</script>
