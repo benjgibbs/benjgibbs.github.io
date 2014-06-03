@@ -58,9 +58,7 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var lUrl = "https://gist.githubusercontent.com/jboner/2841832/raw/"
-  +"0a6e14cda5d6cc8b2eb304a895b0f2ba9b9b75c8/latency.txt";
-//var lUrl = "latencies.tsv";
+var lUrl = "latencies.tsv";
 
 d3.text(lUrl, function(error, data) {
   var latencies=[] 
