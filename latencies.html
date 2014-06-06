@@ -90,13 +90,19 @@ d3.text(lUrl, function(error, data) {
       .call(yAxis);
 
   var barHeight = y.rangeBand();
-  svg.selectAll(".bar")
+
+  var bars = svg.selectAll(".bar")
       .data(latencies)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("transform", function(d,i) { return "translate(0,"+ i * barHeight + ")";})
+      .style("fill-opacity", .1)
       .attr("width", function(d) { return x(d.latency);})
-      .attr("height", function(d) { return barHeight; });
+      .attr("height", function(d) { return barHeight-1; });
+
+  bars.transition()
+      .duration(1500)
+      .style("fill-opacity",0.8)
+      .attr("transform", function(d,i) { return "translate(0," + (i * barHeight) + ")" } );
 });
 
 </script>
