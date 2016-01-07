@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Drops</title>
+    <script type="text/javascript">
+
+      var ctx = null;
+      var drops = [];
+      var numDrops = 200;
+      var canvasSz = 800;
+      var colors = ['darkblue', 'blue', 'lightblue'];
+      
+      function createDrop(start, x, y, c) {
+        return {
+          start: start,
+          x: x,
+          y: y,
+          y1: y,
+          c: c,
+          reset : function(start, x, y, c) { 
+            this.start = start,
+            this.x = x;
+            this.y = y;
+            this.y1 = y;
+            this.c = c;
+          },
+          drawDrop : function() {
+            var r = 4;
+            ctx.fillStyle = this.c;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, r, 0, Math.PI, false);
+            ctx.lineTo(this.x, this.y-r)
+            ctx.lineTo(this.x + r, this.y)
+            ctx.fill();
+          },
+          move : function(now) {
+            var progress = Math.floor(now - this.start)/1000;
+            // each pixel is 0.1m
+            // progress is in s
+            this.y = this.y1 + 9.81 * progress * progress/0.1;
+            //console.log("Progress: " + progress + ", x: " + x + ", y: " + y)
+          },
+          isDone : function(end) {
+            return this.y > end;
+          }
+        }
+      }
+
+      function clear() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0,0,canvasSz,canvasSz);
+      }
+
+      function rnd() {
+        return Math.floor(Math.random() * (canvasSz + 1));
+      }
+
+      function animate(now) {
+        clear()
+        for (i = 0; i < numDrops; i++) {
+          drops[i].drawDrop();
+          drops[i].move(now);
+          if (drops[i].isDone(canvasSz)) {
+            drops[i].reset(now, rnd(), rnd(), colors[i%3]);
+          }
+        }
+        window.requestAnimationFrame(animate);
+      }
+
+      function init() {
+        var c =  document.getElementById('c1');
+        ctx = c.getContext('2d');
+        for (i = 0; i < numDrops; i++) {
+          drops[i] = createDrop(Date.now(), rnd(), rnd(), colors[i%3]);
+        }
+        window.requestAnimationFrame(animate);
+      }
+      function adder(i) { return {
+        inc: function() {i++;},
+        get : function() { return i;}
+      }};
+    </script> 
+  </head>
+  <body onload="init();">
+    <canvas width="800" height="600" id="c1"> </canvas>
+  </body>
+</html>
