@@ -10,6 +10,7 @@
       var canvasX = 800;
       var canvasY = 600;
       var colors = ['darkblue', 'blue', 'lightblue'];
+	  var dropSz = 3;
       
       function createDrop(start, x, y, c) {
         return {
@@ -26,12 +27,11 @@
             this.c = c;
           },
           drawDrop : function() {
-            var r = 10;
             ctx.fillStyle = this.c;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, r, 0, Math.PI, false);
-            ctx.lineTo(this.x, this.y-r)
-            ctx.lineTo(this.x + r, this.y)
+            ctx.arc(this.x, this.y, dropSz, 0, Math.PI, false);
+            ctx.lineTo(this.x, this.y-dropSz)
+            ctx.lineTo(this.x + dropSz, this.y)
             ctx.fill();
           },
           move : function(now) {
