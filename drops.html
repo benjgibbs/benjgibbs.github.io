@@ -7,7 +7,8 @@
       var ctx = null;
       var drops = [];
       var numDrops = 200;
-      var canvasSz = 800;
+      var canvasX = 800;
+	  var canvasY = 600;
       var colors = ['darkblue', 'blue', 'lightblue'];
       
       function createDrop(start, x, y, c) {
@@ -48,19 +49,20 @@
 
       function clear() {
         ctx.fillStyle = 'white';
-        ctx.fillRect(0,0,canvasSz,canvasSz);
+        ctx.fillRect(0,0,canvasX,canvasX);
       }
 
       function rnd() {
-        return Math.floor(Math.random() * (canvasSz + 1));
+        return Math.floor(Math.random() * (canvasX + 1));
       }
 
       function animate(now) {
         clear()
+		screen.width
         for (i = 0; i < numDrops; i++) {
           drops[i].drawDrop();
           drops[i].move(now);
-          if (drops[i].isDone(canvasSz)) {
+          if (drops[i].isDone(canvasX)) {
             drops[i].reset(now, rnd(), rnd(), colors[i%3]);
           }
         }
@@ -68,12 +70,25 @@
       }
 
       function init() {
+	  	canvasX = screen.width-100;
+		canvasY = screen.height-150;
+		numDrops = canvasX/2;
+		
         var c =  document.getElementById('c1');
-        ctx = c.getContext('2d');
+        c.width = canvasX;
+		c.height = canvasY;
+		
+		ctx = c.getContext('2d');
+
         for (i = 0; i < numDrops; i++) {
           drops[i] = createDrop(Date.now(), rnd(), rnd(), colors[i%3]);
         }
         window.requestAnimationFrame(animate);
+		window.addEventListener('resize', function(event){
+			console.log("Resized: " + event)
+		});
+		
+		
       }
       function adder(i) { return {
         inc: function() {i++;},
