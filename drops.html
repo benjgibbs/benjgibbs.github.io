@@ -8,7 +8,7 @@
       var drops = [];
       var numDrops = 200;
       var canvasX = 800;
-	  var canvasY = 600;
+      var canvasY = 600;
       var colors = ['darkblue', 'blue', 'lightblue'];
       
       function createDrop(start, x, y, c) {
@@ -26,7 +26,7 @@
             this.c = c;
           },
           drawDrop : function() {
-            var r = 4;
+            var r = 10;
             ctx.fillStyle = this.c;
             ctx.beginPath();
             ctx.arc(this.x, this.y, r, 0, Math.PI, false);
@@ -36,8 +36,7 @@
           },
           move : function(now) {
             var progress = Math.floor(now - this.start)/1000;
-            // each pixel is 0.1m
-            // progress is in s
+            // each pixel is 0.1m, progress is in s
             this.y = this.y1 + 9.81 * progress * progress/0.1;
             //console.log("Progress: " + progress + ", x: " + x + ", y: " + y)
           },
@@ -58,7 +57,7 @@
 
       function animate(now) {
         clear()
-		screen.width
+        screen.width
         for (i = 0; i < numDrops; i++) {
           drops[i].drawDrop();
           drops[i].move(now);
@@ -70,30 +69,25 @@
       }
 
       function init() {
-	  	canvasX = screen.width-100;
-		canvasY = screen.height-150;
-		numDrops = canvasX/2;
-		
+          canvasX = screen.width-100;
+        canvasY = screen.height-150;
+        numDrops = canvasX/2;
+        
         var c =  document.getElementById('c1');
         c.width = canvasX;
-		c.height = canvasY;
-		
-		ctx = c.getContext('2d');
+        c.height = canvasY;
+        
+        ctx = c.getContext('2d');
 
         for (i = 0; i < numDrops; i++) {
           drops[i] = createDrop(Date.now(), rnd(), rnd(), colors[i%3]);
         }
         window.requestAnimationFrame(animate);
-		window.addEventListener('resize', function(event){
-			console.log("Resized: " + event)
-		});
-		
-		
+        window.addEventListener('resize', function(event){
+            console.log("Resized: " + event)
+        });
       }
-      function adder(i) { return {
-        inc: function() {i++;},
-        get : function() { return i;}
-      }};
+	  
     </script> 
   </head>
   <body onload="init();">
