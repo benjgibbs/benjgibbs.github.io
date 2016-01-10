@@ -61,7 +61,7 @@
         for (i = 0; i < numDrops; i++) {
           drops[i].drawDrop();
           drops[i].move(now);
-          if (drops[i].isDone(canvasX)) {
+          if (drops[i].isDone(canvasY)) {
             drops[i].reset(now, rnd(), rnd(), colors[i%3]);
           }
         }
@@ -85,13 +85,13 @@
       }
       function startAnimation() {
         window.requestAnimationFrame(animate);
+      }
+      $(document).ready(function() {
+        init();
         window.addEventListener('resize', function(event){
           console.log("Resized: " + event)
           init();
         });
-      }
-      $(document).ready(function() {
-        init();
         startAnimation();
       });
       
