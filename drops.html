@@ -2,15 +2,16 @@
 <html>
   <head>
     <title>Drops</title>
+    <script src="./jquery-2.2.0.min.js"> </script>
     <script type="text/javascript">
 
       var ctx = null;
-      var drops = [];
-      var numDrops = 200;
-      var canvasX = 800;
-      var canvasY = 600;
+      var drops = null;
+      var numDrops = 0;
+      var canvasX = 0;
+      var canvasY = 0;
       var colors = ['darkblue', 'blue', 'lightblue'];
-	  var dropSz = 3;
+      var dropSz = 3;
       
       function createDrop(start, x, y, c) {
         return {
@@ -57,7 +58,6 @@
 
       function animate(now) {
         clear()
-        screen.width
         for (i = 0; i < numDrops; i++) {
           drops[i].drawDrop();
           drops[i].move(now);
@@ -69,8 +69,8 @@
       }
 
       function init() {
-          canvasX = screen.width-100;
-        canvasY = screen.height-150;
+        canvasX = $(window).width();
+        canvasY = $(window).height();
         numDrops = canvasX/2;
         
         var c =  document.getElementById('c1');
@@ -78,19 +78,26 @@
         c.height = canvasY;
         
         ctx = c.getContext('2d');
-
+        drops = [] 
         for (i = 0; i < numDrops; i++) {
-          drops[i] = createDrop(Date.now(), rnd(), rnd(), colors[i%3]);
+            drops[i] = createDrop(Date.now(), rnd(), rnd(), colors[i%3]);
         }
+      }
+      function startAnimation() {
         window.requestAnimationFrame(animate);
         window.addEventListener('resize', function(event){
-            console.log("Resized: " + event)
+          console.log("Resized: " + event)
+          init();
         });
       }
-	  
+      $(document).ready(function() {
+        init();
+        startAnimation();
+      });
+      
     </script> 
   </head>
-  <body onload="init();">
-    <canvas width="800" height="600" id="c1"> </canvas>
+  <body>
+    <canvas id="c1"> </canvas>
   </body>
 </html>
