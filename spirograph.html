@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <script src="./jquery-2.2.0.min.js"> </script>
+    <script>
+      var canvasX = 0;
+      var canvasY = 0;
+      var ctx = null;
+      var c1x = 0;
+      var c1y = 0;
+      var c1p = 0.0;
+      var c2x = 0;
+      var c2y = 0;
+      var c2p = 0;
+      var doStop = false;
+      
+      var c1r = 200;
+      var c2r = 120;
+      var c1Inc = 0.01;
+      var c2Inc = 0.02;
+
+      function init() {
+        canvasX = $(window).width();
+        canvasY = $(window).height();
+        c2x = canvasX / 2; 
+        c2y = canvasY / 2; 
+        var c =  document.getElementById('c1');
+        c.width = canvasX;
+        c.height = canvasY;
+        
+        ctx = c.getContext('2d');
+      }
+
+      function clear() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0,0,canvasX,canvasY);
+      }
+
+      function draw() {
+        moveCentre();
+        ctx.strokeStyle = 'blue';
+        ctx.beginPath();
+        ctx.arc(c1x, c1y, c1r, c1p, c1p + c1Inc, true);
+        ctx.stroke();
+        c1p += c1Inc;
+        if (c1p > 2 * Math.PI) {
+          c1p = c1p - 2 * Math.PI;
+        }
+      }
+
+      function moveCentre() {
+        c1x = c2x + c2r * Math.cos(c2p);
+        c1y = c2y + c2r * Math.sin(c2p);
+        c2p += c2Inc;
+        if (c2p > 2 * Math.PI) {
+          doStop = true;
+          c2p = c2p - 2 * Math.PI;
+        }
+      }
+
+      function animate(now) {
+        draw();
+        if (!doStop) {
+          window.requestAnimationFrame(animate);
+        }
+      }
+
+      $(document).ready(function() {
+        init();
+        window.requestAnimationFrame(animate);
+      });
+
+    </script>
+  </head>
+  <body>
+    <canvas id="c1">Tired of canvas? Then you are tired of life.</canvas>
+  </body>
+</html>
